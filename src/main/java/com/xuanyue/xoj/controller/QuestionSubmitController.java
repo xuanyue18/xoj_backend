@@ -5,6 +5,7 @@ import com.xuanyue.xoj.common.BaseResponse;
 import com.xuanyue.xoj.common.ErrorCode;
 import com.xuanyue.xoj.common.ResultUtils;
 import com.xuanyue.xoj.exception.BusinessException;
+import com.xuanyue.xoj.judge.JudgeService;
 import com.xuanyue.xoj.model.dto.questionsubmit.QuestionSubmitAddRequest;
 import com.xuanyue.xoj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
 import com.xuanyue.xoj.model.entity.QuestionSubmit;
@@ -31,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/question_submit")
 @Slf4j
-@Api(tags = "题目提交相关接口")
+// @Api(tags = "题目提交相关接口")
 public class QuestionSubmitController {
 
     @Resource
