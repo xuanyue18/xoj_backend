@@ -1,5 +1,6 @@
 package com.xuanyue.xoj.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuanyue.xoj.common.BaseResponse;
 import com.xuanyue.xoj.common.ErrorCode;
@@ -29,9 +30,10 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author xuanyue18
  */
-@RestController
-@RequestMapping("/question_submit")
+// @RestController
+// @RequestMapping("/question_submit")
 @Slf4j
+@Deprecated
 // @Api(tags = "题目提交相关接口")
 public class QuestionSubmitController {
 
@@ -70,7 +72,7 @@ public class QuestionSubmitController {
      */
     @PostMapping("/list/page")
     @ApiOperation("分页获取题目提交信息列表(管理员和当前用户)")
-    public BaseResponse<Page<QuestionSubmitVO>> listUserByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
+    public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
                                                                HttpServletRequest request) {
         long current = questionSubmitQueryRequest.getCurrent();
         long size = questionSubmitQueryRequest.getPageSize();

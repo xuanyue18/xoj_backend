@@ -1,5 +1,6 @@
-package com.xuanyue.xoj.judge.codesanbox.model;
+package com.xuanyue.xoj.model.dto.codesandbox;
 
+import com.xuanyue.xoj.model.dto.questionsubmit.JudgeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,4 +36,9 @@ public class ExecuteCodeResponse {
      * 执行信息
      */
     private JudgeInfo judgeInfo;
+
+    /**
+     * 执行结果
+     */
+    private List<ExecuteResult> results;
 }

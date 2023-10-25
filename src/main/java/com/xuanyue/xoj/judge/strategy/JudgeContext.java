@@ -1,7 +1,7 @@
 package com.xuanyue.xoj.judge.strategy;
 
 import com.xuanyue.xoj.model.dto.question.JudgeCase;
-import com.xuanyue.xoj.model.dto.questionsubmit.JudgeInfo;
+import com.xuanyue.xoj.judge.codesanbox.model.JudgeInfo;
 import com.xuanyue.xoj.model.entity.Question;
 import com.xuanyue.xoj.model.entity.QuestionSubmit;
 import lombok.Data;

@@ -1,5 +1,6 @@
 package com.xuanyue.xoj.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import com.xuanyue.xoj.annotation.AuthCheck;
@@ -11,10 +12,15 @@ import com.xuanyue.xoj.constant.UserConstant;
 import com.xuanyue.xoj.exception.BusinessException;
 import com.xuanyue.xoj.exception.ThrowUtils;
 import com.xuanyue.xoj.model.dto.question.*;
+import com.xuanyue.xoj.model.dto.questionsubmit.QuestionSubmitAddRequest;
+import com.xuanyue.xoj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
 import com.xuanyue.xoj.model.entity.Question;
+import com.xuanyue.xoj.model.entity.QuestionSubmit;
 import com.xuanyue.xoj.model.entity.User;
+import com.xuanyue.xoj.model.vo.QuestionSubmitVO;
 import com.xuanyue.xoj.model.vo.QuestionVO;
 import com.xuanyue.xoj.service.QuestionService;
+import com.xuanyue.xoj.service.QuestionSubmitService;
 import com.xuanyue.xoj.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,6 +48,9 @@ public class QuestionController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private QuestionSubmitService questionSubmitService;
 
     private final static Gson GSON = new Gson();
 
@@ -231,8 +240,12 @@ public class QuestionController {
         long size = questionQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<Question> questionPage = questionService.page(new Page<>(current, size),
-                questionService.getQueryWrapper(questionQueryRequest));
+        Integer difficulty = questionQueryRequest.getDifficulty();
+        QueryWrapper<Question> queryWrapper = questionService.getQueryWrapper(questionQueryRequest);
+        if (difficulty != null) {
+            queryWrapper.eq("difficulty", difficulty);
+        }
+        Page<Question> questionPage = questionService.page(new Page<>(current, size), queryWrapper);
         return ResultUtils.success(questionService.getQuestionVOPage(questionPage, request));
     }
 
@@ -298,5 +311,70 @@ public class QuestionController {
         boolean result = questionService.updateById(question);
         return ResultUtils.success(result);
     }
+
+    /**
+     * 提交题目
+     *
+     * @param questionSubmitAddRequest
+     * @param request
+     * @return questionSubmitId 提交记录的id
+     */
+    @PostMapping("/question_submit/do")
+    @ApiOperation("提交题目")
+    public BaseResponse<Long> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest,
+                                               HttpServletRequest request) {
+        if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 登录才能提交
+        final User loginUser = userService.getLoginUser(request);
+        long questionSubmitId = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
+        return ResultUtils.success(questionSubmitId);
+    }
+
+    /**
+     * 分页获取题目提交列表（除管理员外, 普通用户只能看到非答案, 提交代码等公开信息）
+     *
+     * @param questionSubmitQueryRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/question_submit/list/page")
+    @ApiOperation("分页获取题目提交信息列表(管理员和当前用户)")
+    public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
+                                                               HttpServletRequest request) {
+        long current = questionSubmitQueryRequest.getCurrent();
+        long size = questionSubmitQueryRequest.getPageSize();
+        Page<QuestionSubmit> questionSubmitPage = questionSubmitService.page(new Page<>(current, size),
+                questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
+        final User loginUser = userService.getLoginUser(request);
+        return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
+    }
+
+    /**
+     * 根据 id 获取题目提交记录
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/question_submit/get")
+    public BaseResponse<QuestionSubmitVO> getQuestionSubmitById(long id, HttpServletRequest request) {
+        if (id <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        QuestionSubmit questionSubmit = questionSubmitService.getById(id);
+        if (questionSubmit == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        // 不是本人或管理员, 不能直接获取所有信息
+        if (!questionSubmit.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        return ResultUtils.success(questionSubmitService.getQuestionSubmitVO(questionSubmit,loginUser));
+    }
+
+
+
 
 }

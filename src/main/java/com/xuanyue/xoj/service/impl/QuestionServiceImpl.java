@@ -106,18 +106,28 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         String sortField = questionQueryRequest.getSortField();
         String sortOrder = questionQueryRequest.getSortOrder();
 
+        String keyword = questionQueryRequest.getKeyword();
+        Integer difficulty = questionQueryRequest.getDifficulty();
+
         // 拼接查询条件
         queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
         queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
         queryWrapper.like(StringUtils.isNotBlank(content), "answer", answer);
+        if (StringUtils.isNotBlank(keyword)) {
+            queryWrapper.like("title", keyword).or().like("content", keyword);
+        }
         if (CollectionUtils.isNotEmpty(tags)) {
             for (String tag : tags) {
                 queryWrapper.like("tags", "\"" + tag + "\"");
             }
         }
+
         queryWrapper.ne(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
+        if (difficulty != null) {
+            queryWrapper.eq("difficulty", difficulty);
+        }
         queryWrapper.eq("isDelete", false);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);

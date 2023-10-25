@@ -1,6 +1,6 @@
 package com.xuanyue.xoj.judge.strategy;
 
-import com.xuanyue.xoj.model.dto.questionsubmit.JudgeInfo;
+import com.xuanyue.xoj.judge.codesanbox.model.JudgeInfo;
 
 /**
  * 判题策略

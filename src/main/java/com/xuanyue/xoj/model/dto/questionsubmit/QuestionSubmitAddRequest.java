@@ -1,12 +1,8 @@
 package com.xuanyue.xoj.model.dto.questionsubmit;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 创建请求
@@ -30,6 +26,7 @@ public class QuestionSubmitAddRequest implements Serializable {
      * 题目 id
      */
     private Long questionId;
+
 
     private static final long serialVersionUID = 1L;
 }

@@ -1,5 +1,6 @@
 package com.xuanyue.xoj.model.enums;
 
+import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Arrays;
@@ -7,24 +8,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 题目提交枚举
- *
- * @author xuanyue18
+ * @author xuanyue_18
  */
-public enum QuestionSubmitStatuEnum {
 
-    // 判题状态（0 - 待判题、1 - 判题中、2 - 成功、3 - 失败）
-    WAITING("等待中", 0),
-    RUNNING("判题中", 1),
-    SUCCESS("成功", 2),
-    FAILED("失败", 3);
+@Getter
+public enum ExecuteCodeStatusEnum {
 
-    private final String text;
+    SUCCESS("成功", 0),
+
+    COMPILE_FAILED("编译失败", 1),
+
+    RUN_FAILED("运行失败", 2),
+
+    NO_AUTH("无权限", 3);
+
+    private final String msg;
 
     private final Integer value;
 
-    QuestionSubmitStatuEnum(String text, Integer value) {
-        this.text = text;
+    ExecuteCodeStatusEnum(String msg, Integer value) {
+        this.msg = msg;
         this.value = value;
     }
 
@@ -43,23 +46,15 @@ public enum QuestionSubmitStatuEnum {
      * @param value
      * @return
      */
-    public static QuestionSubmitStatuEnum getEnumByValue(Integer value) {
+    public static ExecuteCodeStatusEnum getEnumByValue(Integer value) {
         if (ObjectUtils.isEmpty(value)) {
             return null;
         }
-        for (QuestionSubmitStatuEnum anEnum : QuestionSubmitStatuEnum.values()) {
+        for (ExecuteCodeStatusEnum anEnum : ExecuteCodeStatusEnum.values()) {
             if (anEnum.value.equals(value)) {
                 return anEnum;
             }
         }
         return null;
-    }
-
-    public Integer getValue() {
-        return value;
-    }
-
-    public String getText() {
-        return text;
     }
 }

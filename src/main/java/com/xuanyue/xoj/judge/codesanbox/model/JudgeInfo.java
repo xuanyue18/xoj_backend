@@ -1,4 +1,4 @@
-package com.xuanyue.xoj.model.dto.questionsubmit;
+package com.xuanyue.xoj.judge.codesanbox.model;
 
 import lombok.Data;
 

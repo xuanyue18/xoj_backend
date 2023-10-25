@@ -1,11 +1,12 @@
 package com.xuanyue.xoj.judge.codesanbox.impl;
 
 import com.xuanyue.xoj.judge.codesanbox.CodeSandbox;
-import com.xuanyue.xoj.judge.codesanbox.model.ExecuteCodeRequest;
-import com.xuanyue.xoj.judge.codesanbox.model.ExecuteCodeResponse;
+
+
+import com.xuanyue.xoj.model.dto.codesandbox.ExecuteCodeRequest;
+import com.xuanyue.xoj.model.dto.codesandbox.ExecuteCodeResponse;
 import com.xuanyue.xoj.model.dto.questionsubmit.JudgeInfo;
 import com.xuanyue.xoj.model.enums.JudgeInfoMessageEnum;
-import com.xuanyue.xoj.model.enums.QuestionSubmitLanguageEnum;
 import com.xuanyue.xoj.model.enums.QuestionSubmitStatuEnum;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class ExampleCodeSandbox implements CodeSandbox {
         // System.out.println("示例代码沙箱");
         List<String> inputList = executeCodeRequest.getInputList();
         ExecuteCodeResponse executeCodeResponse = new ExecuteCodeResponse();
-        executeCodeResponse.setOutList(inputList);
+        executeCodeResponse.setOutputList(inputList);
         executeCodeResponse.setMessage("测试执行成功");
         executeCodeResponse.setStatus(QuestionSubmitStatuEnum.SUCCESS.getValue());
         JudgeInfo judgeInfo = new JudgeInfo();

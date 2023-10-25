@@ -3,11 +3,12 @@ package com.xuanyue.xoj.judge.strategy;
 import cn.hutool.json.JSONUtil;
 import com.xuanyue.xoj.model.dto.question.JudgeCase;
 import com.xuanyue.xoj.model.dto.question.JudgeConfig;
-import com.xuanyue.xoj.model.dto.questionsubmit.JudgeInfo;
+import com.xuanyue.xoj.judge.codesanbox.model.JudgeInfo;
 import com.xuanyue.xoj.model.entity.Question;
 import com.xuanyue.xoj.model.enums.JudgeInfoMessageEnum;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Java程序判题策略
@@ -27,8 +28,9 @@ public class JavaLanguageJudgeStrategy implements JudgeStrategy {
     public JudgeInfo doJudge(JudgeContext judgeContext) {
 
         JudgeInfo judgeInfo = judgeContext.getJudgeInfo();
-        Long memory = judgeInfo.getMemory();
-        Long time = judgeInfo.getTime();
+        // todo 此处值为空,待解决
+        Long memory = Optional.ofNullable(judgeInfo.getMemory()).orElse(0L);
+        Long time = Optional.ofNullable(judgeInfo.getTime()).orElse(0L);
         List<String> inputList = judgeContext.getInputList();
         List<String> outputList = judgeContext.getOutputList();
         Question question = judgeContext.getQuestion();
@@ -49,6 +51,7 @@ public class JavaLanguageJudgeStrategy implements JudgeStrategy {
         for (int i = 0; i < judgeCaseList.size(); i++) {
             JudgeCase judgeCase = judgeCaseList.get(i);
             if (!judgeCase.getOutput().equals(outputList.get(i))) {
+                judgeInfoMessageEnum = JudgeInfoMessageEnum.WRONG_ANSWER;
                 judgeInfoResponse.setMessage(judgeInfoMessageEnum.getValue());
                 return judgeInfoResponse;
             }

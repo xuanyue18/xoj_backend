@@ -2,6 +2,7 @@ package com.xuanyue.xoj.model.vo;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import com.xuanyue.xoj.model.dto.questionsubmit.JudgeInfo;
 import com.xuanyue.xoj.model.entity.QuestionSubmit;
 import lombok.Data;
@@ -47,6 +48,11 @@ public class QuestionSubmitVO implements Serializable {
      * 题目 id
      */
     private Long questionId;
+
+    /**
+     * 题目名称
+     */
+    private String questionTitle;
 
     /**
      * 创建用户 id
