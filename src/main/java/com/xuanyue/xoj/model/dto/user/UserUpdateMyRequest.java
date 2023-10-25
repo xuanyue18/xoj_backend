@@ -1,7 +1,8 @@
 package com.xuanyue.xoj.model.dto.user;
 
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 用户更新个人信息请求
@@ -25,6 +26,16 @@ public class UserUpdateMyRequest implements Serializable {
      * 简介
      */
     private String userProfile;
+
+    /**
+     * 用户旧密码
+     */
+    private String oldUserPassword;
+
+    /**
+     * 用户新密码
+     */
+    private String userPassword;
 
     private static final long serialVersionUID = 1L;
 }

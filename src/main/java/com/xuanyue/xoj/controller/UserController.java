@@ -30,12 +30,15 @@ import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.mp.api.WxMpService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.xuanyue.xoj.constant.UserConstant.SALT;
 
 /**
  * 用户接口
@@ -302,6 +305,13 @@ public class UserController {
         User loginUser = userService.getLoginUser(request);
         User user = new User();
         BeanUtils.copyProperties(userUpdateMyRequest, user);
+        if (userUpdateMyRequest.getOldUserPassword() != null) {
+            String oldUserPassword = DigestUtils.md5DigestAsHex((SALT + userUpdateMyRequest.getOldUserPassword()).getBytes());
+            if (!oldUserPassword.equals(loginUser.getUserPassword())) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "原始密码不对");
+            }
+            user.setUserPassword(DigestUtils.md5DigestAsHex((SALT + userUpdateMyRequest.getUserPassword()).getBytes()));
+        }
         user.setId(loginUser.getId());
         boolean result = userService.updateById(user);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);

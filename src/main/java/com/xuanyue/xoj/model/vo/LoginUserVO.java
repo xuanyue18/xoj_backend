@@ -1,8 +1,9 @@
 package com.xuanyue.xoj.model.vo;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 已登录用户视图（脱敏）
@@ -16,6 +17,11 @@ public class LoginUserVO implements Serializable {
      * 用户 id
      */
     private Long id;
+
+    /**
+     * 用户账户
+     */
+    private String userAccount;
 
     /**
      * 用户昵称
@@ -36,6 +42,11 @@ public class LoginUserVO implements Serializable {
      * 用户角色：user/admin/ban
      */
     private String userRole;
+
+    /**
+     * token
+     */
+    private String token;
 
     /**
      * 创建时间
