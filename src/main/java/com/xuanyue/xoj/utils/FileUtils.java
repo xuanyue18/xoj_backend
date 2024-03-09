@@ -13,23 +13,24 @@ import org.springframework.stereotype.Component;
 public class FileUtils implements InitializingBean {
 
     public static String END_POINT;
-    public static String KEY_ID;
-    public static String KEY_SECRET;
+    public static String ACCESS_KEY;
+    public static String SECRET_KEY;
     public static String BUCKET_NAME;
+
     @Value("${aliyun.oss.file.endpoint}")
     private String endpoint;
-    @Value("${aliyun.oss.file.keyid}")
-    private String keyid;
-    @Value("${aliyun.oss.file.keysecret}")
-    private String keysecret;
-    @Value("${aliyun.oss.file.bucketname}")
-    private String bucketname;
+    @Value("${aliyun.oss.file.access_key}")
+    private String access_key;
+    @Value("${aliyun.oss.file.secret_key}")
+    private String secret_key;
+    @Value("${aliyun.oss.file.bucket_name}")
+    private String bucket_name;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        KEY_ID = this.keyid;
-        KEY_SECRET = this.keysecret;
         END_POINT = this.endpoint;
-        BUCKET_NAME = this.bucketname;
+        ACCESS_KEY = this.access_key;
+        SECRET_KEY = this.secret_key;
+        BUCKET_NAME = this.bucket_name;
     }
 }

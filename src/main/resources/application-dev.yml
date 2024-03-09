@@ -1,0 +1,40 @@
+# 开发配置文件
+# @author xuanyue18
+
+xuanyue:
+  # 数据库配置
+  # todo 需替换配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/xoj_db
+    username: root
+    password: 123456
+  # Redis 配置
+  # todo 需替换配置
+  redis:
+    database: 1
+    host: localhost
+    port: 6379
+    timeout: 5000
+  #    password: 123456
+  # mq配置
+  rabbitmq:
+    host: localhost
+    port: 5672
+    virtual-host: /
+    username: guest
+    password: guest
+  # mybatis-plus 配置
+  mybatis-plus:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # todo 阿里云对象存储
+  aliyun:
+    oss:
+      file:
+        endpoint: oss-cn-guangzhou.aliyuncs.com
+        access_key: xxx
+        secret_key: xxx
+        bucket_name: xcode-online-judge
+  # 代码沙箱配置
+  codesandbox:
+    type: remote

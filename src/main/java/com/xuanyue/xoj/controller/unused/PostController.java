@@ -1,4 +1,4 @@
-package com.xuanyue.xoj.controller;
+package com.xuanyue.xoj.controller.unused;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;

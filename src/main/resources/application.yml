@@ -1,11 +1,20 @@
 # 公共配置文件
 # @author xuanyue18
+
+server:
+  port: 8121
+  servlet:
+    context-path: /api
+    # cookie 30 天过期
+    session:
+      cookie:
+        max-age: 2592000
+
 spring:
   application:
     name: xoj-backend
-  # 默认 dev 环境
   profiles:
-    active: dev
+    active: prod
   # 支持 swagger3
   mvc:
     pathmatch:
@@ -17,20 +26,18 @@ spring:
     # 30 天过期
     timeout: 2592000
   # 数据库配置
-  # todo 需替换配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/xoj_db
-    username: root
-    password: 123456
+    url: ${xuanyue.datasource.url}
+    username: ${xuanyue.datasource.username}
+    password: ${xuanyue.datasource.password}
   # Redis 配置
-  # todo 需替换配置，然后取消注释
   redis:
-    database: 1
-    host: localhost
-    port: 6379
-    timeout: 5000
-  #    password: 123456
+    database: ${xuanyue.redis.database}
+    host: ${xuanyue.redis.host}
+    port: ${xuanyue.redis.port}
+    timeout: ${xuanyue.redis.timeout}
+  #    password: ${xuanyue.redis.password}
   # Elasticsearch 配置
   # todo 需替换配置，然后取消注释
   #  elasticsearch:
@@ -42,19 +49,12 @@ spring:
     multipart:
       # 大小限制
       max-file-size: 10MB
-server:
-  address: 0.0.0.0
-  port: 8121
-  servlet:
-    context-path: /api
-    # cookie 30 天过期
-    session:
-      cookie:
-        max-age: 2592000
+
+# mybatis-plus 配置
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: ${xuanyue.mybatis-plus.log-impl}
   global-config:
     db-config:
       logic-delete-field: isDelete # 全局逻辑删除的实体字段名
@@ -81,23 +81,41 @@ wx:
   open:
     appId: xxx
     appSecret: xxx
+
+
+
+
 # 对象存储
-# todo 需替换配置
+# todo 腾讯云对象存储
 cos:
   client:
     accessKey: xxx
     secretKey: xxx
     region: xxx
     bucket: xxx
-# 代码沙箱配置
-codesandbox:
-  type: remote
 
 # todo 阿里云对象存储
 aliyun:
   oss:
     file:
-      endpoint: oss-cn-guangzhou.aliyuncs.com
-      keyid: LTAI5tGaFHMMSSnESBhMMRG8
-      keysecret: QJrkxdkggEdcOxLYvAE5Vic8Pmg9Xz
-      bucketname: xcode-online-judge
+      endpoint: ${xuanyue.aliyun.oss.file.endpoint}
+      access_key: ${xuanyue.aliyun.oss.file.access_key}
+      secret_key: ${xuanyue.aliyun.oss.file.secret_key}
+      bucket_name: ${xuanyue.aliyun.oss.file.bucket_name}
+
+# jwt 配置
+xoj:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: xuanyue18
+    # 设置jwt过期时间
+    admin-ttl: 72000000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: token
+    user-secret-key: xuanyue18
+    user-ttl: 72000000
+    user-token-name: Authentication
+
+# 代码沙箱配置
+codesandbox:
+  type: remote

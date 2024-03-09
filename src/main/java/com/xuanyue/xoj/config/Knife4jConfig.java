@@ -25,7 +25,7 @@ public class Knife4jConfig {
     public Docket defaultApi2() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfoBuilder()
-                        .title("玄月OJ接口文档")
+                        .title("Xcode OJ接口文档")
                         .description("xoj-backend")
                         .version("1.0")
                         .build())

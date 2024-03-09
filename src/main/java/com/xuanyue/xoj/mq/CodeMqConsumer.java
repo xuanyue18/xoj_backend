@@ -1,14 +1,11 @@
 package com.xuanyue.xoj.mq;
 
-import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
 import com.xuanyue.xoj.common.ErrorCode;
 import com.xuanyue.xoj.exception.BusinessException;
 import com.xuanyue.xoj.judge.JudgeService;
-import com.xuanyue.xoj.judge.codesanbox.model.JudgeInfo;
 import com.xuanyue.xoj.model.entity.Question;
 import com.xuanyue.xoj.model.entity.QuestionSubmit;
-import com.xuanyue.xoj.model.enums.JudgeInfoMessageEnum;
 import com.xuanyue.xoj.model.enums.QuestionSubmitStatuEnum;
 import com.xuanyue.xoj.service.QuestionService;
 import com.xuanyue.xoj.service.QuestionSubmitService;
@@ -55,25 +52,21 @@ public class CodeMqConsumer {
     @SneakyThrows
     @RabbitListener(queues = {CODE_QUEUE}, ackMode = "MANUAL")
     private void receiveMessage(String message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
+        if (message == null) {
+            rejectMessage(channel, deliveryTag, ErrorCode.NULL_ERROR, "消息为空");
+        }
         log.info("receiveMessage message = {}", message);
         long questionSubmitId = Long.parseLong(message);
-
-        if (message == null) {
-            // 消息为空，则拒绝消息（不重试），进入死信队列
-            channel.basicNack(deliveryTag, false, false);
-            throw new BusinessException(ErrorCode.NULL_ERROR, "消息为空");
-        }
         try {
             judgeService.doJudge(questionSubmitId);
             QuestionSubmit questionSubmit = questionSubmitService.getById(questionSubmitId);
             if (!questionSubmit.getStatus().equals(QuestionSubmitStatuEnum.SUCCESS.getValue())) {
-                channel.basicNack(deliveryTag, false, false);
-                throw new BusinessException(ErrorCode.OPERATION_ERROR, "判题失败");
+                rejectMessage(channel, deliveryTag, ErrorCode.OPERATION_ERROR, "判题失败");
             }
-            log.info("新提交的信息：" + questionSubmit);
+            log.info("新提交的信息：{}", questionSubmit);
             // 设置通过数
             Long questionId = questionSubmit.getQuestionId();
-            log.info("题目:" + questionId);
+            log.info("题目: {}", questionId);
             Question question = questionService.getById(questionId);
             Integer acceptedNum = question.getAcceptedNum();
             Question updateQuestion = new Question();
@@ -88,10 +81,14 @@ public class CodeMqConsumer {
             }
             // 手动确认消息
             channel.basicAck(deliveryTag, false);
-        } catch (IOException e) {
-            // 消息为空，则拒绝消息，进入死信队列
-            channel.basicNack(deliveryTag, false, false);
+        } catch (Exception e) {
+            rejectMessage(channel, deliveryTag, ErrorCode.SYSTEM_ERROR, "系统错误");
             throw new RuntimeException(e);
         }
+    }
+
+    private void rejectMessage(Channel channel, long deliveryTag, ErrorCode errorCode, String errorMessage) throws IOException {
+        channel.basicNack(deliveryTag, false, false);
+        throw new BusinessException(errorCode, errorMessage);
     }
 }

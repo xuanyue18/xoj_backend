@@ -1,7 +1,9 @@
 package com.xuanyue.xoj.judge.strategy;
 
+import com.xuanyue.xoj.model.dto.questionsubmit.JudgeInfo;
+import com.xuanyue.xoj.model.dto.codesandbox.ExecuteResult;
 import com.xuanyue.xoj.model.dto.question.JudgeCase;
-import com.xuanyue.xoj.judge.codesanbox.model.JudgeInfo;
+
 import com.xuanyue.xoj.model.entity.Question;
 import com.xuanyue.xoj.model.entity.QuestionSubmit;
 import lombok.Data;
@@ -19,6 +21,10 @@ public class JudgeContext {
 
     private JudgeInfo judgeInfo;
 
+    private Integer status;
+
+    private List<ExecuteResult> results;
+
     private List<String> inputList;
 
     private List<String> outputList;
@@ -28,4 +34,6 @@ public class JudgeContext {
     private Question question;
 
     private QuestionSubmit questionSubmit;
+
+    private String message;
 }

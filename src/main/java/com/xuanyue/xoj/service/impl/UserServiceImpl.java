@@ -17,13 +17,17 @@ import com.xuanyue.xoj.model.vo.UserVO;
 import com.xuanyue.xoj.service.UserService;
 import com.xuanyue.xoj.utils.SqlUtils;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -103,9 +107,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             log.info("user login failed, userAccount cannot match userPassword");
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
         }
-        // 3. 记录用户的登录态
+        // 3.生成JWT令牌
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", user.getId());
+        claims.put("userAccount", user.getUserAccount());
+        // String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
+
+        // 4. 记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE, user);
-        return this.getLoginUserVO(user);
+        LoginUserVO loginUserVO = this.getLoginUserVO(user);
+        // loginUserVO.setToken(token);
+        return loginUserVO;
     }
 
     @Override
@@ -134,9 +146,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     throw new BusinessException(ErrorCode.SYSTEM_ERROR, "登录失败");
                 }
             }
-            // 记录用户的登录态
+            // 3.生成JWT令牌
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("id", user.getId());
+            claims.put("userAccount", user.getUserAccount());
+            // String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
+
+            // 4. 记录用户的登录态
             request.getSession().setAttribute(USER_LOGIN_STATE, user);
-            return getLoginUserVO(user);
+            LoginUserVO loginUserVO = this.getLoginUserVO(user);
+            // loginUserVO.setToken(token);
+
+            return loginUserVO;
         }
     }
 

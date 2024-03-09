@@ -40,7 +40,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/question")
 @Slf4j
-// @Api(tags = "题目相关接口")
+@Api(tags = "题目相关接口")
 public class QuestionController {
 
     @Resource
@@ -54,7 +54,7 @@ public class QuestionController {
 
     private final static Gson GSON = new Gson();
 
-    // region 增删改查
+    // region 题目相关
 
     /**
      * 创建
@@ -201,7 +201,7 @@ public class QuestionController {
     }
 
     /**
-     * 分页获取列表（封装类）
+     * 分页获取题目列表（封装类）
      *
      * @param questionQueryRequest
      * @param request
@@ -268,8 +268,6 @@ public class QuestionController {
         return ResultUtils.success(questionPage);
     }
 
-    // endregion
-
     /**
      * 编辑（用户）
      *
@@ -332,6 +330,11 @@ public class QuestionController {
         return ResultUtils.success(questionSubmitId);
     }
 
+    // endregion
+
+    // region 题目提交相关
+
+
     /**
      * 分页获取题目提交列表（除管理员外, 普通用户只能看到非答案, 提交代码等公开信息）
      *
@@ -342,7 +345,7 @@ public class QuestionController {
     @PostMapping("/question_submit/list/page")
     @ApiOperation("分页获取题目提交信息列表(管理员和当前用户)")
     public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
-                                                               HttpServletRequest request) {
+                                                                         HttpServletRequest request) {
         long current = questionSubmitQueryRequest.getCurrent();
         long size = questionSubmitQueryRequest.getPageSize();
         Page<QuestionSubmit> questionSubmitPage = questionSubmitService.page(new Page<>(current, size),
@@ -371,10 +374,9 @@ public class QuestionController {
         if (!questionSubmit.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
-        return ResultUtils.success(questionSubmitService.getQuestionSubmitVO(questionSubmit,loginUser));
+        return ResultUtils.success(questionSubmitService.getQuestionSubmitVO(questionSubmit, loginUser));
     }
 
-
-
+    // endregion
 
 }

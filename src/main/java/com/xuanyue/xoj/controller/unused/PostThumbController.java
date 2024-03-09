@@ -1,4 +1,4 @@
-package com.xuanyue.xoj.controller;
+package com.xuanyue.xoj.controller.unused;
 
 import com.xuanyue.xoj.common.BaseResponse;
 import com.xuanyue.xoj.common.ErrorCode;

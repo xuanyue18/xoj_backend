@@ -20,7 +20,7 @@ import javax.annotation.Resource;
  * @author xuanyue_18
  * 文件上传接口
  */
-@Api(tags = "FileController")
+@Api(tags = "文件上传接口")
 @RestController
 @RequestMapping("/file")
 public class FileController {
@@ -37,13 +37,13 @@ public class FileController {
     @ApiOperation(value = "文件上传")
     @PostMapping("/upload")
     public BaseResponse<String> uploadOssFile(@RequestPart("file") MultipartFile file) {
-        //获取上传的文件
+        // 获取上传的文件
         if (file.isEmpty()) {
             throw new BusinessException(ErrorCode.NULL_ERROR, "上传文件为空");
         }
-        //返回上传到oss的路径
+        // 返回上传到oss的路径
         String url = fileService.uploadFileAvatar(file);
-        //返回r对象
+        // 返回r对象
         return ResultUtils.success(url);
     }
 }

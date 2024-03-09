@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.UUID;
 
 /**
  * @author xuanyue_18
@@ -29,46 +30,36 @@ public class FileServiceImpl implements FileService {
 
         //工具类获取值
         String endpoint = FileUtils.END_POINT;
-        String accessKeyId = FileUtils.KEY_ID;
-        String accessKeySecret = FileUtils.KEY_SECRET;
+        String accessKeyId = FileUtils.ACCESS_KEY;
+        String accessKeySecret = FileUtils.SECRET_KEY;
         String bucketName = FileUtils.BUCKET_NAME;
         InputStream inputStream = null;
         try {
-            // 创建OSS实例
             OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-            // 把文件按照日期分类，获取当前日期
             String datePath = new DateTime().toString("yyyy-MM-dd");
-            // 获取上传文件的输入流
             inputStream = file.getInputStream();
-            // 获取文件名称
-            String originalFileName = file.getOriginalFilename();
 
-            // 拼接日期和文件路径
-            String fileName = datePath + "/" + originalFileName;
+            // 获取文件扩展名
+            String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+            // 生成随机文件名
+            String randomFileName = UUID.randomUUID() + extension;
 
-            // 判断文件是否存在
+            String fileName = datePath + "/" + randomFileName;
+
             boolean exists = ossClient.doesObjectExist(bucketName, fileName);
             if (exists) {
-                // 如果文件已存在，则先删除原来的文件再进行覆盖
                 ossClient.deleteObject(bucketName, fileName);
             }
 
-            // 创建上传Object的Metadata
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(inputStream.available());
-            objectMetadata.setContentType(getcontentType(fileName.substring(fileName.lastIndexOf("."))));
+            objectMetadata.setContentType(getcontentType(extension));
             objectMetadata.setContentDisposition("attachment; filename=" + URLEncoder.encode(fileName, "UTF-8"));
 
-            //调用oss实例中的方法实现上传
-            //参数1： Bucket名称
-            //参数2： 上传到oss文件路径和文件名称 /aa/bb/1.jpg
-            //参数3： 上传文件的输入流
             ossClient.putObject(bucketName, fileName, inputStream);
 
-            // 关闭OSSClient。
             ossClient.shutdown();
 
-            // 把上传后文件路径返回，需要把上传到阿里云oss路径手动拼接出来
             String url = "https://" + bucketName + "." + endpoint + "/" + fileName;
             return url;
         } catch (IOException e) {

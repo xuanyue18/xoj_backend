@@ -1,5 +1,6 @@
 package com.xuanyue.xoj.aop;
 
+import com.xuanyue.xoj.utils.NetUtils;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,8 @@ public class LogInterceptor {
         // 获取请求路径
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest httpServletRequest = ((ServletRequestAttributes) requestAttributes).getRequest();
+        // 获取客户端IP地址
+        String clientIp = NetUtils.getIpAddress(httpServletRequest);
         // 生成请求唯一 id
         String requestId = UUID.randomUUID().toString();
         String url = httpServletRequest.getRequestURI();
@@ -41,15 +44,18 @@ public class LogInterceptor {
         Object[] args = point.getArgs();
         String reqParam = "[" + StringUtils.join(args, ", ") + "]";
         // 输出请求日志
-        log.info("request start，id: {}, path: {}, ip: {}, params: {}", requestId, url,
-                httpServletRequest.getRemoteHost(), reqParam);
+        log.info("---- Request Start ----");
+        log.info("ID: {}", requestId);
+        log.info("Path: {}", url);
+        log.info("Client IP: {}", clientIp);
+        log.info("Params: {}", reqParam);
         // 执行原方法
         Object result = point.proceed();
         // 输出响应日志
         stopWatch.stop();
         long totalTimeMillis = stopWatch.getTotalTimeMillis();
-        log.info("request end, id: {}, cost: {}ms", requestId, totalTimeMillis);
+        log.info("---- Request End ----");
+        log.info("ID: {}, Total Cost: {}ms", requestId, totalTimeMillis);
         return result;
     }
 }
-
