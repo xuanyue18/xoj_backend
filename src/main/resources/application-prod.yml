@@ -1,15 +1,14 @@
 # 线上配置文件
 # @author xuanyue18
-server:
-  port: 8101
-spring:
+
+xuanyue:
   # 数据库配置
   # todo 需替换配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/my_db
-    username: root
-    password: 123456
+    url: jdbc:mysql://120.78.197.53:3306/xcode_oj
+    username: xcode_oj
+    password: 5ZkEKeymRRcAZYCp
   # Redis 配置
   # todo 需替换配置
   redis:
@@ -17,14 +16,39 @@ spring:
     host: localhost
     port: 6379
     timeout: 5000
-  # password: 123456
-  # Elasticsearch 配置
-  # todo 需替换配置
-  elasticsearch:
-    uris: http://localhost:9200
-    username: root
     password: 123456
-mybatis-plus:
-  configuration:
-    # 生产环境关闭日志
+  # mq配置
+  rabbitmq:
+    host: 120.78.197.53
+    port: 5672
+    virtual-host: /
+    username: admin
+    password: c2af216f
+  # mybatis-plus 配置
+  mybatis-plus:
     log-impl: ''
+  # todo 阿里云对象存储
+  aliyun:
+    oss:
+      file:
+        endpoint: oss-cn-guangzhou.aliyuncs.com
+        access_key: LTAI5tAdHh6VLZb8iBACu7UH
+        secret_key: 51Q5VeVRsaHPcSxHHwNG7lJfHuS7t4
+        bucket_name: xcode-online-judge
+  knife4j:
+    enable: true
+    setting:
+      enableDebug: true
+      language: zh-CN
+    #是否为生产环境进行拒绝访问；true为关闭knife4j页面访问功能
+    production: false
+    #开启账户登录模式
+    basic:
+      enable: true
+      # Basic认证用户名
+      username: wzewei
+      # Basic认证密码
+      password: 12345678
+  # 代码沙箱配置
+  codesandbox:
+    type: remote

@@ -15,6 +15,7 @@ import com.xuanyue.xoj.model.enums.UserRoleEnum;
 import com.xuanyue.xoj.model.vo.LoginUserVO;
 import com.xuanyue.xoj.model.vo.UserVO;
 import com.xuanyue.xoj.service.UserService;
+import com.xuanyue.xoj.utils.JwtUtils;
 import com.xuanyue.xoj.utils.SqlUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,12 +112,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", user.getId());
         claims.put("userAccount", user.getUserAccount());
-        // String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
+        String token = JwtUtils.getToken(claims);
 
         // 4. 记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE, user);
         LoginUserVO loginUserVO = this.getLoginUserVO(user);
-        // loginUserVO.setToken(token);
+        loginUserVO.setToken(token);
         return loginUserVO;
     }
 

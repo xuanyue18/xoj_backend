@@ -5,16 +5,12 @@ server:
   port: 8121
   servlet:
     context-path: /api
-    # cookie 30 天过期
-    session:
-      cookie:
-        max-age: 2592000
 
 spring:
   application:
     name: xoj-backend
   profiles:
-    active: prod
+    active: dev
   # 支持 swagger3
   mvc:
     pathmatch:
@@ -82,7 +78,20 @@ wx:
     appId: xxx
     appSecret: xxx
 
-
+knife4j:
+  enable: true
+  setting:
+    enableDebug: true
+    language: zh-CN
+  #是否为生产环境进行拒绝访问；true为关闭knife4j页面访问功能
+  production: ${xuanyue.knife4j.production}
+  #开启账户登录模式
+  basic:
+    enable: ${xuanyue.knife4j.basic.enable}
+    # Basic认证用户名
+    username: ${xuanyue.knife4j.basic.username}
+    # Basic认证密码
+    password: ${xuanyue.knife4j.basic.password}
 
 
 # 对象存储
@@ -107,15 +116,17 @@ aliyun:
 xoj:
   jwt:
     # 设置jwt签名加密时使用的秘钥
-    admin-secret-key: xuanyue18
+    secret-key: xuanyue18
     # 设置jwt过期时间
-    admin-ttl: 72000000
+    ttl: 604800
     # 设置前端传递过来的令牌名称
-    admin-token-name: token
-    user-secret-key: xuanyue18
-    user-ttl: 72000000
-    user-token-name: Authentication
+    token-name: token
+
 
 # 代码沙箱配置
 codesandbox:
   type: remote
+
+# 这个配置是不用看token是否合法 直接通过
+gateway:
+  excludedUrls: /user/get/login,/user/logout,/user/register,/user/update/my,/user/login,/user/getLoginUser,/user/register,/question/list/page/vo

@@ -38,3 +38,18 @@ xuanyue:
   # 代码沙箱配置
   codesandbox:
     type: remote
+
+  knife4j:
+    enable: true
+    setting:
+      enableDebug: true
+      language: zh-CN
+    #是否为生产环境进行拒绝访问；true为关闭knife4j页面访问功能
+    production: false
+    #开启账户登录模式
+    basic:
+      enable: false
+      # Basic认证用户名
+      username: admin
+      # Basic认证密码
+      password: 123456
